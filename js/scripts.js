@@ -79,13 +79,54 @@ Card.prototype = {
 	}
 };
 
-var board = {
-    name: 'Tablica Kanban',
+//var board = {
+    //name: 'Tablica Kanban',
+    //addColumn: function(column) {
+      //this.$element.append(column.$element);
+      //initSortable();
+    //},
+    //$element: $('#board .column-container')
+//};
+
+function Board(name) {
+
+	var self = this; 
+
+    this.id = randomString();
+    this.name = name;
+    this.$element = createBoard();
+
+	function createBoard() {
+	var $board = $('<div>').addClass('board');
+  var $boardTitle = $('<h2>').addClass('board-title').text(self.name);
+  var $boardColumnList = $('<ul>').addClass('board-list');
+  var $boardDelete = $('<button>').addClass('btn-delete').text('x');
+  var $boardAddColumn = $('<button>').addClass('add-column').text('Dodaj kolumnę');	
+
+  $boardDelete.click(function() {
+    self.removeBoard();
+  });
+
+  $boardAddColumn.click(function(event) {
+    self.addColumn(new Card(prompt("Wpisz nazwę kolumny")));
+  });
+
+    $board.append($boardTitle)
+    .append($boardDelete)
+    .append($boardAddColumn)
+    .append($boardColumnList);
+
+	return $board;	
+	}
+}
+
+Board.prototype = {
     addColumn: function(column) {
-      this.$element.append(column.$element);
-      initSortable();
+      this.$element.children('ul').append(column.$element);
     },
-    $element: $('#board .column-container')
+    removeBoard: function() {
+      this.$element.remove();
+    }
 };
 
 function initSortable() {
@@ -98,7 +139,7 @@ function initSortable() {
   $('.create-column').click(function() {
 	var name = prompt('Wpisz nazwę kolumny');
 	var column = new Column(name);
-    board.addColumn(column);
+   $board.addColumn(column);
   });
 
 
@@ -106,9 +147,9 @@ var todoColumn = new Column('Do zrobienia');
 var doingColumn = new Column('W trakcie');
 var doneColumn = new Column('Skończone');
 
-board.addColumn(todoColumn);
-board.addColumn(doingColumn);
-board.addColumn(doneColumn);
+$board.addColumn(todoColumn);
+$board.addColumn(doingColumn);
+$board.addColumn(doneColumn);
 
 var card1 = new Card('Nowe zadanie');
 var card2 = new Card('Stworzyc tablice kanban');
@@ -119,12 +160,11 @@ doingColumn.addCard(card2);
 })
 
 
- //function Board(name) {
-		//var self = this;
-		//this.id = randomString();
-		//this.name = name;
-		//this.$element = createBoard();
+ $('.create-board').click(function() {
+	var name = prompt('Wpisz nazwę tablicy');
+	var board = new Board(name);
+   $board.addColumn(column);
+  });
 
-	//function createBoard() {
-		
-//}
+ var todoBoard = new Board('Tablica');
+ //$board.addBoard(todoBoard);
